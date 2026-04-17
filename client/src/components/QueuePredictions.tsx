@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Activity, Clock } from 'lucide-react';
 
 interface QueueNode {
@@ -16,7 +16,8 @@ export default function QueuePredictions() {
   useEffect(() => {
     const fetchQueues = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/queues');
+        const baseUrl = import.meta.env.MODE === 'development' ? 'http://localhost:8080' : '';
+        const response = await fetch(`${baseUrl}/api/queues`);
         const data = await response.json();
         setQueues(data.queues || []);
       } catch (e) {

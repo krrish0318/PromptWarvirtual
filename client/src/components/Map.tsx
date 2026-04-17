@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 
 const containerStyle = {
@@ -21,14 +21,12 @@ export default function MapView() {
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "YOUR_API_KEY"
   });
 
-  const [map, setMap] = useState<google.maps.Map | null>(null);
-
   const onLoad = useCallback(function callback(mapInstance: google.maps.Map) {
-    setMap(mapInstance);
+    // optional logic
   }, []);
 
-  const onUnmount = useCallback(function callback(mapInstance: google.maps.Map) {
-    setMap(null);
+  const onUnmount = useCallback(function callback() {
+    // optional component logic
   }, []);
 
   // For visual wow-factor even without valid API keys (it might show "for development purposes only")

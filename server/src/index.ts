@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
+import path from 'path';
 import apiRoutes from './routes/api';
 
 dotenv.config();
@@ -9,7 +10,10 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false,
+}));
 app.use(cors());
 app.use(express.json());
 
@@ -19,6 +23,20 @@ app.use('/api', apiRoutes);
 // Health check
 app.get('/health', (req: Request, res: Response) => {
   res.status(200).json({ status: 'OK', message: 'SmartVenue AI Server is running.' });
+});
+
+// Serve frontend static files
+const clientPath = process.env.NODE_ENV === 'production' 
+  ? path.join(__dirname, '../public') 
+  : path.join(__dirname, '../../client/dist');
+
+app.use(express.static(clientPath));
+
+// Catch-all route for React Router
+app.get('*', (req: Request, res: Response, next: NextFunction) => {
+  // Ignore API calls that fell through
+  if (req.path.startsWith('/api/')) return next();
+  res.sendFile(path.join(clientPath, 'index.html'));
 });
 
 // Error handling middleware

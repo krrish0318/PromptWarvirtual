@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Send, Mic, MicOff, Bot } from 'lucide-react';
 
 interface Message {
@@ -32,7 +32,9 @@ export default function ChatAssistant() {
     setIsTyping(true);
 
     try {
-      const response = await fetch('http://localhost:8080/api/assistant', {
+      // Determine the base URL (relative for deployed, absolute for local dev)
+      const baseUrl = import.meta.env.MODE === 'development' ? 'http://localhost:8080' : '';
+      const response = await fetch(`${baseUrl}/api/assistant`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: userMsg })
